@@ -9,7 +9,7 @@ func TestNormalizeURL(t *testing.T) {
 		expected string
 	}{
 		{
-			name:     "remove schema",
+			name:     "remove https protocol",
 			inputURL: "https://blog.boot.dev/path",
 			expected: "blog.boot.dev/path",
 		},
@@ -17,6 +17,11 @@ func TestNormalizeURL(t *testing.T) {
 			name:     "remove last slash",
 			inputURL: "https://blog.boot.dev/path/",
 			expected: "blog.boot.dev/path",
+		},
+		{
+			name:     "remove http protocol",
+			inputURL: "http://blog.boot.dev/path/",
+			expected: "blog.boot.dev/path?",
 		},
 	}
 	for i, tc := range tests {
@@ -27,8 +32,8 @@ func TestNormalizeURL(t *testing.T) {
 				return
 			}
 			if actual != tc.expected {
-				t.Errorf("Test %v - '%s' FAIL: unexpected error: %v", i, tc.name, err)
+				t.Errorf("Test %v - %s FAIL: expected URL: %v, actual: %v", i, tc.name, tc.expected, actual)
 			}
-		}
+		})
 	}
 }
