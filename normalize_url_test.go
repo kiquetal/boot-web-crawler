@@ -21,7 +21,7 @@ func TestNormalizeURL(t *testing.T) {
 		{
 			name:     "remove http protocol",
 			inputURL: "http://blog.boot.dev/path/",
-			expected: "blog.boot.dev/path?",
+			expected: "blog.boot.dev/path",
 		},
 	}
 	for i, tc := range tests {
