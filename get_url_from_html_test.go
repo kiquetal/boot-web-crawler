@@ -1,8 +1,10 @@
 package main
 
-import "testing"
+import (
+	"testing"
+)
 
-func TestNormalizeURL(t *testing.T) {
+func TestGetUrlFromHtml(t *testing.T) {
 	tests := []struct {
 		name      string
 		inputURL  string
@@ -29,13 +31,14 @@ func TestNormalizeURL(t *testing.T) {
 	}
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			actual, err := getU(tc.inputURL)
+			actual, err := getURLFromHTML(tc.inputURL, tc.inputBody)
 			if err != nil {
 				t.Errorf("Test %v - '%s' FAIL: unexpected error: %v", i, tc.name, err)
 				return
 			}
-			if actual != tc.expected {
-				t.Errorf("Test %v - %s FAIL: expected URL: %v, actual: %v", i, tc.name, tc.expected, actual)
+			if len(actual) != len(tc.expected) {
+				t.Errorf("Test %v - '%s' FAIL: expected %v, got %v", i, tc.name, tc.expected, actual)
+				return
 			}
 		})
 	}
