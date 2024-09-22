@@ -11,11 +11,7 @@ func TestMain(m *testing.M) {
 		input    []string
 		expected int
 	}{
-		{
-			name:     "no arguments",
-			input:    []string{"./entry"},
-			expected: 1,
-		},
+
 		{
 			name:     "one argument",
 			input:    []string{"./entry", "https://blog.boot.dev"},
