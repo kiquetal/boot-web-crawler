@@ -20,5 +20,14 @@ func main() {
 	url := os.Args[1]
 	fmt.Println("starting crawl")
 	fmt.Printf("%v\n", url)
+	// get the html body from the url
+	htmlBody, err := getHTML(url)
+	if err != nil {
+		fmt.Println("error getting html")
+		os.Exit(1)
+	}
+	fmt.Println("html body retrieved")
+	fmt.Println("body length: ", len(htmlBody))
+	fmt.Println("body content: ", htmlBody)
 
 }
