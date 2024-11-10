@@ -6,7 +6,10 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/kiquetal/boot-web-crawler/internal/database"
 	_ "github.com/lib/pq"
+	urlLib "net/url"
 	"os"
+	"strconv"
+	"sync"
 )
 
 func main() {
@@ -33,17 +36,31 @@ func main() {
 		fmt.Println("no website provided")
 		os.Exit(1)
 	}
-	if len(os.Args) > 2 {
+	if len(os.Args) > 4 {
 		// if not, exit with status code 1
 		fmt.Println("too many arguments provided")
 		os.Exit(1)
 	}
 	url := os.Args[1]
+	maxPages, _ := strconv.Atoi(os.Args[2])
+	maxConcurrency, _ := strconv.Atoi(os.Args[3])
 	fmt.Println("starting crawl")
 	fmt.Printf("%v\n", url)
 	// get the html body from the url
 	//	htmlBody, err := getHTML(url)
-	crawlPage(url, url, make(map[string]int))
+	baseURL, _ := urlLib.Parse(url)
+	c := config{
+		pages:              make(map[string]int),
+		mu:                 &sync.Mutex{},
+		concurrencyControl: make(chan struct{}, maxConcurrency),
+		wg:                 &sync.WaitGroup{},
+		baseURL:            baseURL,
+		maxPages:           maxPages,
+	}
+
+	c.crawlPage(url)
+	c.wg.Wait()
+	fmt.Printf("pages: %v\n", c.pages)
 	if err != nil {
 		fmt.Println("error getting html")
 		os.Exit(1)

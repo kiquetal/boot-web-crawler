@@ -15,6 +15,9 @@ func normalizeURL(urlString string) (string, error) {
 	//return everything except schema using the Host and Path
 
 	toReturn := u.Host + u.Path
+	if len(toReturn) == 0 {
+		return "", errors.New("URL is empty")
+	}
 	if toReturn[len(toReturn)-1] == '/' {
 		toReturn = toReturn[:len(toReturn)-1]
 	}
