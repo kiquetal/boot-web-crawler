@@ -84,11 +84,19 @@ func (c *config) crawlPage(rawCurrentlURL string) {
 			if strings.HasPrefix(normalizedURL, "/") {
 				fmt.Println("same domain")
 			} else {
-				fmt.Println("different domain")
-				fmt.Println("normalized u: ", normalizedURL)
-				continue
+				parsedURL, err := url.Parse(normalizedURL)
+				if err != nil {
+					fmt.Println("Error parsing URL:", err)
+					return
+				}
+				if parsedURL.Scheme == "" || parsedURL.Host == "" {
+					fmt.Println("same domain")
+				} else {
+					fmt.Println("different domain")
+					fmt.Println("normalized URL:", normalizedURL)
+					continue
+				}
 			}
-
 			if err != nil {
 				fmt.Println("error normalizing u")
 				continue

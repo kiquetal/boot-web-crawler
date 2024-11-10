@@ -8,6 +8,7 @@ import (
 	_ "github.com/lib/pq"
 	urlLib "net/url"
 	"os"
+	"sort"
 	"strconv"
 	"sync"
 )
@@ -60,10 +61,40 @@ func main() {
 
 	c.crawlPage(url)
 	c.wg.Wait()
-	fmt.Printf("pages: %v\n", c.pages)
+	printReport(c.pages, url)
 	if err != nil {
 		fmt.Println("error getting html")
 		os.Exit(1)
+	}
+
+}
+
+func printReport(pages map[string]int, baseURL string) {
+	fmt.Println("Length of pages: ", len(pages))
+	fmt.Printf("\n========================================\n")
+	fmt.Printf("REPORT for %v\n", baseURL)
+	fmt.Printf("========================================\n")
+
+	//sort the map by value
+
+	type kv struct {
+		Key   string
+		Value int
+	}
+	var ss []kv
+	for k, v := range pages {
+		ss = append(ss, kv{k, v})
+	}
+
+	// Sort the slice based on the map values
+	sort.Slice(ss, func(i, j int) bool {
+		return ss[i].Value > ss[j].Value
+	})
+
+	// Print the sorted key-value pairs
+	for _, kv := range ss {
+		fmt.Printf("Found %v internal links to %v\n", kv.Value, kv.Key)
+
 	}
 
 }
